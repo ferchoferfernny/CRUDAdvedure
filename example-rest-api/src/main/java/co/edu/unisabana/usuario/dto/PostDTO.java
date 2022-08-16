@@ -23,7 +23,7 @@ public class PostDTO
         this.nit= nit;
     }
 
-    
+
     public String getName() {
         return name;
     }

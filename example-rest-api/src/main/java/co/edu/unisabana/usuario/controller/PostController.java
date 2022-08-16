@@ -1,12 +1,16 @@
 package co.edu.unisabana.usuario.controller;
 
-import co.edu.unisabana.usuario.dto.PostDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import co.edu.unisabana.usuario.dto.PostDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +18,7 @@ import java.util.List;
 public class PostController
 {
 
-    public List<PostDTO> dataStartPost()
+    public static List<PostDTO> dataStartPost()
     {
         List<PostDTO> list = new ArrayList<>();
         list.add(new PostDTO("Travesia Amazonica", "15/08/2022", "Visita el amazonas junto a nosotros! Vincúlate al plan Travesía amazónica y vive una experiencia inolvidable.", "",10000,"192123"));
@@ -22,7 +26,7 @@ public class PostController
         return list;
     }
 
-    public List<PostDTO> localList=dataStartPost();
+    public static List<PostDTO> localListP=dataStartPost();
 
 
 
@@ -31,19 +35,19 @@ public class PostController
     //@Override
     public List<PostDTO> read (@PathVariable String name)
     {
-        List<PostDTO> resultados = new ArrayList<>();
-        localList.forEach(data ->
+        List<PostDTO> result = new ArrayList<>();
+        localListP.forEach(data ->
         {
             if (data.getName().contains(name))
             {
-                resultados.add(data);
+                result.add(data);
             }
         });
-        if (resultados.isEmpty()){
+        if (result.isEmpty()){
             this.notFound();
         }
 
-        return resultados;
+        return result;
     }
 
     
@@ -52,7 +56,7 @@ public class PostController
         return "";
     }
 
-    @GetMapping("/createPost")
+    @PostMapping("/createPost")
     public PostDTO create(@RequestParam String name,
                         @RequestParam String date,
                         @RequestParam String content,
@@ -61,19 +65,19 @@ public class PostController
                         @RequestParam String nit)
     {
         PostDTO x=new PostDTO(name,date,content,image,price,nit);
-        localList.add(x);
+        localListP.add(x);
         return x;
     }
 // metodo para eliminar un metodo de un 
-    @GetMapping ("/deletePost/{nit}")
+    @DeleteMapping ("/deletePost/{nit}")
     public void delete(@RequestParam String name, @PathVariable String nit)
     {
-        localList.removeIf(t -> name.equals(t.getName()));
+        localListP.removeIf(t -> name.equals(t.getName()));
     }
 
     public void deleteRelation (String nit){
 
-        localList.removeIf(t -> nit.equals(t.getNit()));
+        localListP.removeIf(t -> nit.equals(t.getNit()));
 
     } 
 
@@ -84,7 +88,7 @@ public class PostController
 
 
 // metodo para sobre escribir un registro 
-    @GetMapping ("/updatePost")
+    @PostMapping ("/updatePost")
     public String update(@RequestParam String name, 
                         @RequestParam String date,
                         @RequestParam String content, 
@@ -93,7 +97,7 @@ public class PostController
                         @RequestParam String nit)
     {
         PostDTO x=new PostDTO(name,date,content,image,price, nit);
-        localList.forEach(data ->
+        localListP.forEach(data ->
         {
 
             if (data.getName().contains(name))
